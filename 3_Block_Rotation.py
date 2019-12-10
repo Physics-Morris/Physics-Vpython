@@ -56,7 +56,7 @@ def set_e(g):
 
 # clean all ball
 def clc_ball():
-    # global ball
+    global t
     # print(len(ball))
     if len(ball) != 0:
         for j in range(len(ball)):
@@ -65,6 +65,8 @@ def clc_ball():
     building2.up=vec(0, 1, 0)
     building2.v=vec(0, 0, 0)
     building2.w=0
+    w.delete()
+    t = 0
 
 
 # create widgets
@@ -91,6 +93,7 @@ b1 = button(text="<font size=25>Shoot</font>", bind=shoot,
 
 b2 = button(text="<font size=25>Restart</font>", bind=clc_ball, 
             background=color.purple)
+scene.append_to_caption('\n\n\n\n\n\n')
 
 # calculate collide speed
 def collide(m, M, v1, v2):
@@ -117,7 +120,15 @@ def angular_acc():
 def angular_v(vx, r):
     return vx/r
 
-dt = 0.01
+
+# plot
+g1 = graph(title='<b>Angular Velocity (for block)</b>', 
+           xtitle='<b>time</b>', ytitle='<b>Angular Velocity</b>', align='right', 
+           width=1000, height=600)
+
+w = gdots(graph=g1)
+
+t, dt = 0, 0.01
 while True:
     rate(1/dt)
     for j in range(len(ball)):
@@ -180,6 +191,11 @@ while True:
 
             building2.rotate(origin=vec(-110, 0, 0), axis=vec(0, 0, 1), 
                              angle=dtheta)
+
+    t += dt
+
+    # plot
+    w.plot(pos=(t, building2.w))
 
 
 

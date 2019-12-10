@@ -47,9 +47,10 @@ def restart(k):
     running = False
     b1.text = "<font size=25>Run</font>"
     t = 0
-    total_p.delete()
-    m_p.delete()
-    M_p.delete()
+    m_v.delete()
+    M_v.delete()
+    # m_p.delete()
+    # M_p.delete()
     total_E.delete()
     m_E.delete()
     M_E.delete()
@@ -152,7 +153,7 @@ ball = sphere(pos=vec(1.5/sin(theta), 10, 5), radius=1.5, v=vec(0, 0, 0),
 
 # 作圖
 
-g1 = graph(title='<b>Momentum (x direction)</b>', 
+g1 = graph(title='<b>Velocity (x direction)</b>', 
            xtitle='<b>time</b>', ytitle='<b>P</b>', 
            align='right', width=1400, height=500)
 g2 = graph(title='<b>Energy<b>', xtitle='<b>time</b>', 
@@ -160,10 +161,10 @@ g2 = graph(title='<b>Energy<b>', xtitle='<b>time</b>',
 
 # 動量
 
-total_p = gdots(graph=g1, color=color.blue)
-m_p = gdots(graph=g1, color=color.red)
-M_p = gdots(graph=g1, color=color.green)
-
+# m_p = gdots(graph=g1, color=color.red)
+# M_p = gdots(graph=g1, color=color.green)
+m_v = gdots(graph=g1, color=color.red)
+M_v = gdots(graph=g1, color=color.green)
 
 # 能量
 
@@ -212,9 +213,10 @@ while True:
 
         if ball.pos.y >= ball.radius+floor.size.y/2:
             p = ball.v.x * m + A.v.x * s0.value
-            total_p.plot(pos=(t, p))
-            m_p.plot(pos=(t, m * ball.v.x))
-            M_p.plot(pos=(t, s0.value * A.v.x))
+            m_v.plot(pos=(t, ball.v.x))
+            M_v.plot(pos=(t, A.v.x))
+            # m_p.plot(pos=(t, m * ball.v.x))
+            # M_p.plot(pos=(t, s0.value * A.v.x))
 
         K = 0.5*m*(ball.v.x**2 + ball.v.y**2) + 0.5*s0.value*A.v.x**2
         U = m*g*(ball.pos.y - (ball.radius+floor.size.y/2))
