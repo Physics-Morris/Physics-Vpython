@@ -31,7 +31,7 @@ moon = sphere(pos=vec(sun_earth_r+earth_moon_r*10, 0, 0), radius=moon_r*2500, ma
               color=vec(0.95, 0.94, 0.78))
 
 
-g1 = graph(title='Moon Position', align='right', xtitle='<b>X</b>', ytitle='<b>Y</b>', 
+g1 = graph(title='Moon Position', align='right', xtitle='<b>X(km)</b>', ytitle='<b>Y(km)</b>', 
            width=1400, height=600)
 
 scene.append_to_caption('\n\n<i>Make sun 50 times bigger and moon 2500 times bigger</i>\n\n\n\n\n\n\n')
@@ -55,8 +55,8 @@ while True:
     moon.pos = vec(earth_moon_r*cos(dt*i*2*pi/T)*10, earth_moon_r*sin(dt*i*2*pi/T)*10, 0) + earth.pos
     i += 1
 
-    moon_p.plot(pos=(moon.pos.x, moon.pos.y))
-    earth_p.plot(pos=(earth.pos.x, earth.pos.y))
+    moon_p.plot(pos=(moon.pos.x/1000, moon.pos.y/1000))
+    earth_p.plot(pos=(earth.pos.x/1000, earth.pos.y/1000))
 
     t += dt
 
