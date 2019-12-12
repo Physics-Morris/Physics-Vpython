@@ -14,10 +14,12 @@ T = 2360488
 
 scene = canvas(title='<font size=30><center><i>Motion of Moon\n</i></center></font>', 
                    width=1600, height=1300, align='left', range=200)
+
+
 scene.range = sun_earth_r + earth_moon_r*50
 
 earth = sphere(pos=vec(sun_earth_r, 0, 0), texture=textures.earth, up=vec(-tan(23.5/180*pi), 0, 1), 
-               radius=earth_r*500, make_trail=True, v=vec(0, earth_v, 0), a=vec(0, 0, 0))
+               radius=earth_r, make_trail=True, v=vec(0, earth_v, 0), a=vec(0, 0, 0))
 
 sun = sphere(pos=vec(0,0,0), radius=sun_r*50, color=color.orange, emissive=True, v=vec(0, 0, 0), 
              a=vec(0, 0, 0))
@@ -25,11 +27,14 @@ sun = sphere(pos=vec(0,0,0), radius=sun_r*50, color=color.orange, emissive=True,
 # moon = sphere(pos=vec(earth_moon_r+sun_earth_r, 0, 0), radius=moon_r*20, make_trail=False, 
 #               v=vec(0, moon_v+earth_v, 0), a=vec(0, 0, 0))
 
-moon = sphere(pos=vec(sun_earth_r+earth_moon_r*20, 0, 0), radius=moon_r*2000, make_trail=True)
+moon = sphere(pos=vec(sun_earth_r+earth_moon_r*10, 0, 0), radius=moon_r*2500, make_trail=True, 
+              color=vec(0.95, 0.94, 0.78))
 
 
 g1 = graph(title='Moon Position', align='right', xtitle='<b>X</b>', ytitle='<b>Y</b>', 
-           width=1000, height=600)
+           width=1400, height=600)
+
+scene.append_to_caption('\n\n<i>Make sun 50 times bigger and moon 2500 times bigger</i>\n\n\n\n\n\n\n')
 
 moon_p = gdots(graph=g1, color=color.black)
 earth_p = gdots(graph=g1, color=color.blue)
@@ -47,7 +52,7 @@ while True:
     earth.v += earth.a*dt
     earth.pos += earth.v*dt
 
-    moon.pos = vec(earth_moon_r*cos(dt*i*2*pi/T)*20, earth_moon_r*sin(dt*i*2*pi/T)*20, 0) + earth.pos
+    moon.pos = vec(earth_moon_r*cos(dt*i*2*pi/T)*10, earth_moon_r*sin(dt*i*2*pi/T)*10, 0) + earth.pos
     i += 1
 
     moon_p.plot(pos=(moon.pos.x, moon.pos.y))
