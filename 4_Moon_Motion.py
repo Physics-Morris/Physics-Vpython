@@ -13,7 +13,7 @@ T = 2360488
 
 
 scene = canvas(title='<font size=30><center><i>Motion of Moon\n</i></center></font>', 
-                   width=1600, height=1300, align='left', range=200)
+                   width=1000, height=600, align='left', range=200)
 
 
 scene.range = sun_earth_r + earth_moon_r*50
@@ -32,7 +32,7 @@ moon = sphere(pos=vec(sun_earth_r+earth_moon_r*10, 0, 0), radius=moon_r*2500, ma
 
 
 g1 = graph(title='Moon Position', align='right', xtitle='<b>X(km)</b>', ytitle='<b>Y(km)</b>', 
-           width=1400, height=600)
+           width=500, height=350)
 
 scene.append_to_caption('\n\n<i>Make sun 50 times bigger and moon 2500 times bigger</i>\n\n\n\n\n\n\n')
 

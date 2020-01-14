@@ -8,15 +8,15 @@ earth_r = 6.371E6
 
 earth_m =  5.9724E24
 
-theta = radians(45)
+theta = radians(60)
 
-v0 = 6000
+v0 = 3E3
 
 T = 86400
 
 G = 6.67408E-11
 
-omg = 2*pi/T*5
+omg = 2*pi/T
 
 # scene setting
 

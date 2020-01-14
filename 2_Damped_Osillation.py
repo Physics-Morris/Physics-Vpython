@@ -1,27 +1,34 @@
 # Morris 2019/11/21
 
 from vpython import *
+# from random import *
+
+############################################################################################
+
+k, m = 1, 5
+# critical, under, over = 2*m*(k/m)**0.5, 0.2, 10
+gamma = 2*(m*k)**0.5
 
 
 ############################################################################################
 
-k, m, g = 1, 5, 9.8
-critical, under, over = 2*m*(k/m)**0.5, 0.2, 10
-
-
-############################################################################################
-
-scene = canvas(title='Spring in Water', width=1600, height=900, background=vec(0, 0.6, 0.6),
-               align='left')
+scene = canvas(width=1000, height=600, background=vec(0, 0.6, 0.6), align='left')
 scene.camera.pos = vec(-35, 80, 90)
 scene.camera.axis = vec(25, -60, -90)
 
 ############################################################################################
 
-A = vertex(pos=vec(50, 40, 17), color=color.green, opacity=0.2)
-B = vertex(pos=vec(50, 40, -17), color=color.green, opacity=0.2)
-D = vertex(pos=vec(-50, 40, 17), color=color.green, opacity=0.2)
-C = vertex(pos=vec(-50, 40, -17), color=color.green, opacity=0.2)
+# box()
+# scene.caption = "\\(m\\dfrac {d^{2}x}{dt^{2}}+\\gamma \\dfrac {dx}{dt}+kx = 0\\)"
+
+# MathJax.Hub.Queue(["Typeset",MathJax.Hub])
+
+############################################################################################
+ 
+A = vertex(pos=vec(50, 45, 17), color=color.green, opacity=0.2)
+B = vertex(pos=vec(50, 45, -17), color=color.green, opacity=0.2)
+D = vertex(pos=vec(-50, 45, 17), color=color.green, opacity=0.2)
+C = vertex(pos=vec(-50, 45, -17), color=color.green, opacity=0.2)
 
 E = vertex(pos=vec(50, -35, 17), color=color.green, opacity=0.2)
 F = vertex(pos=vec(50, -35, -17), color=color.green, opacity=0.2)
@@ -34,74 +41,138 @@ S3 = quad(v0=B, v1=C, v2=F, v3=E)
 S4 = quad(v0=C, v1=D, v2=G, v3=F)
 S5 = quad(v0=D, v1=A, v2=H, v3=G)
 
+
 ############################################################################################
+block = []
 
-spring = helix(pos=vec(-30, 33, 0), axis=vec(0, 37, 0), radius=3,
-               coil=30, v=vec(0, 0, 0), a=vec(0, -35*k/m, 0))
-
-block = box(pos=vec(-30, 35, 0), size=vec(7, 7, 7), color=color.blue,
-            v=vec(0, 0, 0), a=vec(0, -35*k/m, 0))
-
-spring2 = helix(pos=vec(0, 33, 0), axis=vec(0, 37, 0), radius=3, coil=30,
+spring = helix(pos=vec(0, 33, 0), axis=vec(0, 37, 0), radius=3, coil=30,
                 v=vec(0, 0, 0), a=vec(0, -35*k/m, 0))
 
-block2 = box(pos=vec(0, 35, 0), size=vec(7, 7, 7), color=color.red, v=vec(0, 0, 0),
+a = box(pos=vec(0, 35, 0), size=vec(7, 7, 7), color=color.red, v=vec(0, 0, 0),
              a=vec(0, -35*k/m, 0))
 
-spring3 = helix(pos=vec(30, 33, 0), axis=vec(0, 37, 0), radius=3, coil=30, v=vec(0, 0, 0),
-                a=vec(0, -35*k/m, 0))
+block.append(a)
 
-block3 = box(pos=vec(30, 35, 0), size=vec(7, 7, 7), color=color.green, v=vec(0, 0, 0),
-             a=vec(0, -35*k/m, 0))
-
-water = box(pos=vec(0, 0, 0), size=vec(100, 70, 34), color=vec(0, 0, 1), opacity=0.2)
+water = box(pos=vec(0, 2, 0), size=vec(100, 74, 34), color=vec(0, 0, 1), opacity=0.2)
 
 celling = box(pos=vec(0, 70, 0), size=vec(100, 2, 34), color=vec(0.3, 0.3, 0.3))
 
-sep1 = box(pos=vec(-15,2.5,0), size=vec(1,70,34), color=color.green)
 
-sep2 = box(pos=vec(15,2.5,0), size=vec(1,70,34), color=color.green)
 
 ############################################################################################
 
-g1 = graph(title='Position', xtitle='t', ytitle='position', align='right', width=1300,
-           height=800)
+running = False
 
-yt = gcurve(graph=g1, color=color.blue)
-y2t = gcurve(graph=g1, color=color.red)
-y3t = gcurve(graph=g1, color=color.green)
+def Run(r):
+    global running
+    running = not running
 
+    if running: 
+        r.text = "Pause"
+
+    else: 
+        r.text = "Run"
+
+i = 0
+yt = []
+def Restart():
+    global running, t, i
+    k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)
+    running = False
+    b1.text = 'Run'
+    t = 0
+    i += 1
+    x, y, z = random(), random(), random()
+    yt_idx = gcurve(graph=g1, color=vec(x, y, z))
+    yt.append(yt_idx)
+    a = box(pos=vec(0, 35, 0), size=vec(7, 7, 7), color=vec(x, y, z), v=vec(0, 0, 0),
+             a=vec(0, -35*k0/m0, 0))
+    block.append(a)
+    block[i-1].visible = False
+    spring.pos = vec(0, 33, 0)
+    spring.v = vec(0, 0, 0)
+    spring.a = vec(0, -35*k0/m0, 0)
+    spring.axis = vec(0, 37, 0)
+
+def set_k():
+    k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)
+    critical(k0, m0, gamma0)
+
+def set_m():
+    k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)
+    critical(k0, m0, gamma0)
+
+def set_gamma():
+    k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)    
+    critical(k0, m0, gamma0)
+
+def test_none(k_tmp, m_tmp, gamma_tmp):
+    if k_tmp == None: k_ans = k 
+    else: k_ans = k_tmp
+    if m_tmp == None: m_ans = m
+    else: m_ans = m_tmp
+    if gamma_tmp == None: gamma_ans = gamma
+    else: gamma_ans = gamma_tmp
+    return k_ans, m_ans, gamma_ans
+
+def critical(k_tmp, m_tmp, gamma_tmp):
+    k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)
+    txt1.text = 2*(k0*m0)**0.5
+    return 0
+############################################################################################
+
+scene.append_to_caption('      ')
+
+b1 = button(text="Run", bind=Run, background=color.cyan)
+
+scene.append_to_caption('      ')
+
+b2 = button(text="Restart", bind=Restart, background=color.cyan)
+
+scene.append_to_caption('\n\n      k =     ')
+ipt_k = winput(bind=set_k, type='numeric')
+
+scene.append_to_caption('\n\n      m =     ')
+ipt_m = winput(bind=set_m, type='numeric')
+
+scene.append_to_caption('\n\n      &Gamma; =     ')
+ipt_gamma = winput(bind=set_gamma, type='numeric')
+
+scene.append_to_caption('\n\n      (for critical damping &Gamma; = ')
+txt1 = wtext(text=2*(k*m)**0.5)
+scene.append_to_caption(')')
+
+scene.append_to_caption('<i>\n\n(Please press enter after setting each parameter to confirm the setting,\n otherwise it will run on default parameter)</i>')
+
+############################################################################################
+g1 = graph(title='Position', xtitle='t', ytitle='position', align='right', width=500,
+           height=300)
+
+yt_idx = gcurve(graph=g1, color=color.red)
+yt.append(yt_idx)
 ############################################################################################
 
 dt = 0.01
 t = 0
 
-while t<45:
-    rate(300)
-    block.a.y = -k*block.pos.y - block.v.y*under
-    block.v.y += block.a.y*dt
-    block.pos.y += block.v.y*dt
-    block2.a.y = -k*block2.pos.y - block2.v.y*critical
-    block2.v.y += block2.a.y*dt
-    block2.pos.y += block2.v.y*dt
-    block3.a.y = -k*block3.pos.y - block3.v.y*over
-    block3.v.y += block3.a.y*dt
-    block3.pos.y += block3.v.y*dt
+while True:
 
-    spring.a.y = -k*spring.pos.y - spring.v.y*under
-    spring.v.y += spring.a.y*dt
-    spring.pos.y += spring.v.y*dt
-    spring2.a.y = -k*spring2.pos.y - spring2.v.y*critical
-    spring2.v.y += spring2.a.y*dt
-    spring2.pos.y += spring2.v.y*dt
-    spring3.a.y = -k*spring3.pos.y - spring3.v.y*over
-    spring3.v.y += spring3.a.y*dt
-    spring3.pos.y += spring3.v.y*dt
+    if running:
+        k0, m0, gamma0 = test_none(ipt_k.number, ipt_m.number, ipt_gamma.number)
 
-    spring.axis.y = spring.axis.y - spring.v.y*dt
-    spring2.axis.y = spring2.axis.y - spring2.v.y*dt
-    spring3.axis.y = spring3.axis.y - spring3.v.y*dt
-    yt.plot(pos=(t, block.pos.y))
-    y2t.plot(pos=(t, block2.pos.y))
-    y3t.plot(pos=(t, block3.pos.y))
-    t += dt
+        rate(300)
+        block[i].a.y = -k0*block[i].pos.y/m0 - block[i].v.y*gamma0/m0
+        block[i].v.y += block[i].a.y*dt
+        block[i].pos.y += block[i].v.y*dt
+
+
+        spring.a.y = -k0*spring.pos.y/m0 - spring.v.y*gamma0/m0
+        spring.v.y += spring.a.y*dt
+        spring.pos.y += spring.v.y*dt
+
+
+        spring.axis.y = spring.axis.y - spring.v.y*dt
+
+        yt[i].plot(pos=(t, block[i].pos.y))
+
+        t += dt

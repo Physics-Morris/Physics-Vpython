@@ -1,23 +1,21 @@
 # Morris H. 12/7
 
 from vpython import *
-from random import *
+
 
 # initial perimeter setting
 m, M, theta, v0, e, g = 1, 10, 45, 100, 1, 98
-theta *= pi/180
+
 
 # scene setting
 def set_scene():
     global scene
-    scene = canvas(title='<font size=30><center><i>Block Rotation\n</i></center></font>', 
-                   width=1600, height=1000, align='left', range=200)
+    scene = canvas(width=1000, height=600, background=vec(0, 0.6, 0.6), align='left', range=200)
     floor = box(pos=vec(0, 0, 0), size=vec(1000, 1, 1000), color=color.blue)
     building1 = box(pos=vec(100, 50, 0), size=vec(10, 100, 10), color=color.cyan, 
                     up=vec(0,1,0))
-    # building2 = box(pos=vec(-100, 50, 0), size=vec(20, 100, 50), color=color.orange, 
-    #                 up=vec(0,1,0,), v=vec(0, 0, 0))
-    scene.camera.pos = vec(0, 60, 250)
+    scene.camera.pos = vec(0, 60, 200)
+
 set_scene()
 building2 = box(pos=vec(-100, 50.5, 0), size=vec(20, 100, 50), color=color.orange, 
     up=vec(0,1,0,), v=vec(0, 0, 0), w=0)
@@ -28,31 +26,35 @@ ball = []
 i = 0
 def gen_ball():
     global i
-    a = sphere(pos=vec(100, 105, 0), radius=5, color=vec(randint(0, 100)/100, randint(0, 100/100), randint(0, 100)/100), 
-               v=vec(-v0*cos(theta), v0*sin(theta), 0), a=vec(0, -g, 0))
+    a = sphere(pos=vec(100, 105, 0), radius=5, color=vec(random(), random(), random()), 
+               v=vec(-v0*cos(radians(theta)), v0*sin(radians(theta)), 0), a=vec(0, -g, 0))
     ball.append(a)
     i += 1
 gen_ball()
 
 # set theta
 def set_theta(t):
-    txt1.text = t.value
+    global e, v0, theta
+    e, v0, theta = test_none(ipt_e.number, ipt_v0.number, ipt_theta.number)
+    return 0
     
 # set v0
 def set_v0(v):
-    txt2.text = v.value
+    global e, v0, theta
+    e, v0, theta = test_none(ipt_e.number, ipt_v0.number, ipt_theta.number)
+    return 0
 
 # shoot
 def shoot():
     gen_ball()
-    ball[i-1].v = vec(-s2.value*cos(s1.value*pi/180), 
-                      s2.value*sin(s1.value*pi/180), 0)
+    # ball[i].v = vec(-v0*cos(radians(theta)), 
+    #                   v0*sin(radians(theta)), 0)
 
 # set e
 def set_e(g):
-    # global e
-    # e = g.value
-    txt0.text = g.value
+    global e, v0, theta
+    e, v0, theta = test_none(ipt_e.number, ipt_v0.number, ipt_theta.number)
+    return 0
 
 # clean all ball
 def clc_ball():
@@ -61,6 +63,7 @@ def clc_ball():
     if len(ball) != 0:
         for j in range(len(ball)):
             ball[j].visible = False
+        ball[:] = []
     building2.pos = vec(-100, 50.5, 0) 
     building2.up=vec(0, 1, 0)
     building2.v=vec(0, 0, 0)
@@ -68,37 +71,48 @@ def clc_ball():
     w.delete()
     t = 0
 
+def test_none(e_tmp, v0_tmp, theta_tmp):
+    if e_tmp == None: e_ans = e 
+    elif (e_tmp > 1 or e_tmp < 0): e_ans = e
+    else: e_ans = e_tmp
+
+    if v0_tmp == None: v0_ans = v0
+    else: v0_ans = v0_tmp
+
+    if theta_tmp == None: theta_ans = theta
+    else: theta_ans = theta_tmp
+
+    return e_ans, v0_ans, theta_ans
 
 # create widgets
-scene.append_to_caption('      <font size=15>e: </font>')
-s0 = slider(min=0.7, max=1, value=1, length=300, bind=set_e, 
-            right=15, width=20)
-txt0 = wtext(text=s0.value)
+
+scene.append_to_caption('      e: ')
+ipt_e = winput(bind=set_e, type='numeric')
 scene.append_to_caption(' \n\n\n')
 
-scene.append_to_caption('      <font size=15>Angle: </font>')
-s1 = slider(min=0, max=80, value=45, length=300, bind=set_theta, 
-            right=15, width=20)
-txt1 = wtext(text=s1.value)
-scene.append_to_caption(' Degree\n\n\n')
+scene.append_to_caption('      Angle: ')
+ipt_theta = winput(bind=set_theta, type='numeric')
+scene.append_to_caption(' (Degree)\n\n\n')
 
-scene.append_to_caption('      <font size=15>V0: </font>            ')
-s2 = slider(min=50, max=150, value=100, length=300, bind=set_v0, 
-            right=15, width=20)
-txt2 = wtext(text=s2.value)
-
+scene.append_to_caption('      V0:')
+ipt_v0 = winput(bind=set_v0, type='numeric')
 scene.append_to_caption('                                    ')
-b1 = button(text="<font size=25>Shoot</font>", bind=shoot, 
+
+b1 = button(text="Shoot", bind=shoot, 
             background=color.purple)
 
-b2 = button(text="<font size=25>Restart</font>", bind=clc_ball, 
+b2 = button(text="Restart", bind=clc_ball, 
             background=color.purple)
-scene.append_to_caption('\n\n\n\n\n\n')
+
+scene.append_to_caption('\n\n')
+
+scene.append_to_caption('<i>\n\n(Please press enter after setting each parameter, otherwise \n it will run on default parameter)</i>')
+
 
 # calculate collide speed
 def collide(m, M, v1, v2):
-    v1f = (m*v1 + M*v2 + s0.value*M*(v2 - v1))/(m + M)
-    v2f = (m*v1 + M*v2 + s0.value*m*(v1 - v2))/(m + M)
+    v1f = (m*v1 + M*v2 + e*M*(v2 - v1))/(m + M)
+    v2f = (m*v1 + M*v2 + e*m*(v1 - v2))/(m + M)
     return v1f, v2f
 
 # determine the boundary of block
@@ -124,7 +138,7 @@ def angular_v(vx, r):
 # plot
 g1 = graph(title='<b>Angular Velocity (for block)</b>', 
            xtitle='<b>time</b>', ytitle='<b>Angular Velocity</b>', align='right', 
-           width=1000, height=600)
+           width=500, height=300)
 
 w = gdots(graph=g1)
 
@@ -135,7 +149,7 @@ while True:
 
         # motion when hit thte ground
         if ball[j].pos.y <= 5.5  and ball[j].pos.x >= -85:
-            ball[j].v.y *= -s0.value
+            ball[j].v.y *= -e
             ball[j].v += ball[j].a*dt
             ball[j].pos += ball[j].v*dt
 

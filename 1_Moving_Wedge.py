@@ -5,12 +5,11 @@
 from vpython import *
 
 
-
 # 初始值設定
 
 
 
-M, m, g, theta, k = 3, 1, 9.8, pi/4, 0
+M, m, g, theta, k = 3.0, 1.0, 9.8, 45, 0.0
 
 
 
@@ -20,11 +19,13 @@ M, m, g, theta, k = 3, 1, 9.8, pi/4, 0
 
 
 
-def acc(theta, k, M):
+def acc(theta, k, M, m):
+
+    theta = radians(theta)
 
     if k >= tan(theta):
 
-        a_m, a_M, m_a_x, m_a_y, M_a_x = 0, 0, 0, 0, 0
+        a_m, a_M, m_a_x, m_a_y, M_a_x = 0.0, 0.0, 0.0, 0.0, 0.0
 
     else:
 
@@ -44,7 +45,7 @@ def acc(theta, k, M):
 
     
 
-m_a_x, m_a_y, M_a_x = acc(theta, k, M)
+m_a_x, m_a_y, M_a_x = acc(theta, k, M, m)
 
 
 
@@ -54,11 +55,11 @@ def set_scene():
 
     global scene
 
-    scene = canvas(width=3200, height=500, align='left')
+    scene = canvas(width=1000, height=300, align='left')
 
-    scene.camera.pos = vec(30, 13, 50)
+    scene.camera.pos = vec(30, 10, 40)
 
-    scene.camera.axis = vec(-5, -13, -30)
+    scene.camera.axis = vec(-5, -10, -30)
 
 set_scene()
 
@@ -74,15 +75,21 @@ def Run(r):
 
     if running: 
 
-        r.text = "<font size=25>Pause</font>"
+        r.text = "Pause"
 
     else: 
 
-        r.text = "<font size=25>Run</font>"
+        r.text = "Run"
 
 
 
 def restart():
+
+    theta_tmp, friction_tmp, M_tmp, m_tmp = s1.number, s2.number, s0.number, s3.number
+    if theta_tmp == None: theta_tmp = theta
+    if friction_tmp == None: friction_tmp = k
+    if M_tmp == None: M_tmp = M
+    if m_tmp == None: m_tmp = m
 
     global running
 
@@ -90,7 +97,7 @@ def restart():
 
     running = False
 
-    b1.text = "<font size=25>Run</font>"
+    b1.text = "Run"
 
     t = 0
 
@@ -108,13 +115,15 @@ def restart():
 
     M_E.delete()
 
-    A.pos, B.pos, C.pos, D.pos, E.pos, F.pos = vec(0, 0, 0), vec(10/tan(s1.value*pi/180), 0, 0), vec(10/tan(s1.value*pi/180), 0, 10), vec(0, 0, 10), vec(0, 10, 10), vec(0, 10, 0)
+    A.pos, B.pos, C.pos, D.pos, E.pos, F.pos = vec(0, 0, 0), vec(10/tan(radians(theta_tmp)), 0, 0), vec(10/tan(radians(theta_tmp)), 0, 10), vec(0, 0, 10), vec(0, 10, 10), vec(0, 10, 0)
 
     A.v, B.v, C.v, D.v, E.v, F.v = vec(0,0,0), vec(0,0,0), vec(0,0,0), vec(0,0,0), vec(0,0,0), vec(0,0,0)
 
     apex = [A, B, C, D, E, F]
 
-    m_a_x, m_a_y, M_a_x = acc(s1.value*pi/180, s2.value, s0.value)
+
+    m_a_x, m_a_y, M_a_x = acc(theta_tmp, friction_tmp, M_tmp, m_tmp)
+
 
     for i in range(0,6):
 
@@ -122,35 +131,43 @@ def restart():
 
     
 
-    ball.v, ball.pos, ball.a.x, ball.a.y = vec(0,0,0), vec(1.5/sin(s1.value*pi/180), 10, 5), m_a_x, m_a_y
+    ball.v, ball.pos, ball.a.x, ball.a.y = vec(0,0,0), vec(1.5/sin(radians(theta_tmp)), 10, 5), m_a_x, m_a_y
 
 
 
-def set_theta(t):
+def set_theta():
 
-    txt1.text = t.value
-
-    m_a_x, m_a_y, M_a_x = acc(t.value*pi/180, s2.value, s0.value)
+    theta_tmp, friction_tmp, M_tmp, m_tmp = s1.number, s2.number, s0.number, s3.number
+    if theta_tmp == None: theta_tmp = theta
+    if friction_tmp == None: friction_tmp = k
+    if M_tmp == None: M_tmp = M
+    if m_tmp == None: m_tmp = m
+    if theta_tmp > 80 or theta_tmp < 10: theta_tmp = theta
+    m_a_x, m_a_y, M_a_x = acc(theta_tmp, friction_tmp, M_tmp, m_tmp)
 
     for i in range(1,3):
 
-        apex[i].pos.x = 10/tan(t.value*pi/180)
+        apex[i].pos.x = 10/tan(radians(theta_tmp))
 
     for i in range(0,6):
 
         apex[i].a.x = M_a_x
 
-    ball.pos.x = 1.5/sin(t.value*pi/180)
+    ball.pos.x = 1.5/sin(radians(theta_tmp))
 
     ball.a.x, ball.a.y = m_a_x, m_a_y
 
     
 
-def set_friction(f):
+def set_friction():
 
-    txt2.text = f.value
+    theta_tmp, friction_tmp, M_tmp, m_tmp = s1.number, s2.number, s0.number, s3.number
+    if theta_tmp == None: theta_tmp = theta
+    if friction_tmp == None: friction_tmp = k
+    if M_tmp == None: M_tmp = M
+    if m_tmp == None: m_tmp = m
 
-    m_a_x, m_a_y, M_a_x = acc(s1.value*pi/180, f.value, s0.value)
+    m_a_x, m_a_y, M_a_x = acc(theta_tmp, friction_tmp, M_tmp, m_tmp)
 
     for i in range(0,6):
 
@@ -160,11 +177,15 @@ def set_friction(f):
 
 
 
-def set_mass(m):
+def set_mass():
 
-    txt0.text = m.value
+    theta_tmp, friction_tmp, M_tmp, m_tmp = s1.number, s2.number, s0.number, s3.number
+    if theta_tmp == None: theta_tmp = theta
+    if friction_tmp == None: friction_tmp = k
+    if M_tmp == None: M_tmp = M
+    if m_tmp == None: m_tmp = m
 
-    m_a_x, m_a_y, M_a_x = acc(s1.value*pi/180, s2.value, m.value)
+    m_a_x, m_a_y, M_a_x = acc(theta_tmp, friction_tmp, M_tmp, m_tmp)
 
     for i in range(0,6):
 
@@ -179,59 +200,46 @@ def set_mass(m):
 # 開使按鈕、角度設定、摩擦力設定
 
 
-scene.append_to_caption('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+scene.append_to_caption('      ')
+
+b1 = button(text="Run", bind=Run, background=color.cyan)
+
+
 
 scene.append_to_caption('      ')
 
-b1 = button(text="<font size=25>Run</font>", bind=Run, background=color.cyan)
+b2 = button(text="Restart", bind=restart, background=color.cyan)
 
+# 設定M
 
+scene.append_to_caption('\n\nM =     ')
 
-scene.append_to_caption('      ')
+s0 = winput(bind=set_mass, type='numeric')
 
-b2 = button(text="<font size=25>Restart</font>", bind=restart, background=color.cyan)
+# 設定m
 
+scene.append_to_caption('\n\nm =     ')
 
+s3 = winput(bind=set_mass, type='numeric')
 
-scene.append_to_caption('\n\n<font size=25>Ratio(M/m)</font>')
+# 設定角度
 
-s0 = slider(min=1, max=5, value=3, length=300, bind=set_mass, 
+scene.append_to_caption('\n\nAngle of wedge(10~80):')
 
-            right=15, width=20)
-
-txt0 = wtext(text=s0.value)
-
-# scene.append_to_caption(' M/m\n')
-
-
-
-
-
-scene.append_to_caption('\n\n<font size=15>Angle of wedge: </font>')
-
-s1 = slider(min=10, max=80, value=45, length=300, bind=set_theta, 
-
-            right=15, width=20)
-
-txt1 = wtext(text=s1.value)
+s1 = winput(bind=set_theta, type='numeric')
 
 scene.append_to_caption(' Degree\n')
 
+# 設定摩擦力
 
+scene.append_to_caption('\n\nCoefficient of friction on the slope: ')      
 
-# theta = s1.value
+s2 = winput(bind=set_friction, type='numeric')
 
+scene.append_to_caption('<i>\n\n(Please press enter after setting each parameter, otherwise \n it will run on default parameter)</i>')
 
+scene.append_to_caption('\n\n\n\n\n')
 
-
-
-scene.append_to_caption('\n\n<font size=15>Coefficient of friction on the slope: </font>')      
-
-s2 = slider(min=0, max=3, value=0, length=300, bind=set_friction, 
-
-            right=15, width=20)
-
-txt2 = wtext(text=s2.value)
 
 
 
@@ -249,9 +257,9 @@ def set_wedge():
 
     A = vertex(pos=vec(0, 0, 0), color=color.orange, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
 
-    B = vertex(pos=vec(10/tan(theta), 0, 0), color=color.purple, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
+    B = vertex(pos=vec(10/tan(radians(theta)), 0, 0), color=color.purple, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
 
-    C = vertex(pos=vec(10/tan(theta), 0, 10), color=color.green, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
+    C = vertex(pos=vec(10/tan(radians(theta)), 0, 10), color=color.green, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
 
     D = vertex(pos=vec(0, 0, 10), color=color.blue, v=vec(0, 0, 0), a=vec(M_a_x, 0, 0))
 
@@ -287,7 +295,7 @@ apex = [A, B, C, D, E, F]
 
 
 
-floor = box(pos=vec(0,0,0), size=vec(1000, 1, 30), color=color.blue, v=vec(0, 0, 0), 
+floor = box(pos=vec(0,0,0), size=vec(300, 1, 30), color=color.blue, v=vec(0, 0, 0), 
 
             a=vec(0, 0, 0))
 
@@ -297,7 +305,7 @@ floor = box(pos=vec(0,0,0), size=vec(1000, 1, 30), color=color.blue, v=vec(0, 0,
 
 
 
-ball = sphere(pos=vec(1.5/sin(theta), 10, 5), radius=1.5, v=vec(0, 0, 0),
+ball = sphere(pos=vec(1.5/sin(radians(theta)), 10, 5), radius=1.5, v=vec(0, 0, 0),
 
             a=vec(m_a_x, m_a_y, 0), texture=textures.wood)
 
@@ -313,21 +321,16 @@ g1 = graph(title='<b>Velocity (x direction)</b>',
 
            xtitle='<b>time</b>', ytitle='<b>P</b>', 
 
-           align='left', width=1000, height=500)
+           align='left', width=500, height=300)
 
 g2 = graph(title='<b>Energy<b>', xtitle='<b>time</b>', 
 
-           ytitle='<b>E</b>', align='left', width=1000, height=500)
+           ytitle='<b>E</b>', align='left', width=500, height=300)
 
 
 
 # 動量
 
-
-
-# m_p = gdots(graph=g1, color=color.red)
-
-# M_p = gdots(graph=g1, color=color.green)
 
 m_v = gdots(graph=g1, color=color.red)
 
@@ -361,8 +364,9 @@ while True:
 
     rate(1/dt)
     
-    if t > 3:
-        restart()
+    if ball.pos.x > 50:
+        
+        running = False
 
     if running:
 
@@ -426,11 +430,14 @@ while True:
 
         # 作圖(動量和能量)，到達底部後不畫動量
 
-
+        if s0.number == None: tmp_M = M
+        else: tmp_M = s0.number
+        if s3.number == None: tmp_m = m
+        else: tmp_m = s3.number
 
         if ball.pos.y >= ball.radius+floor.size.y/2:
 
-            p = ball.v.x * m + A.v.x * s0.value
+            p = ball.v.x * tmp_m + A.v.x * tmp_M
 
             m_v.plot(pos=(t, ball.v.x))
 
@@ -442,9 +449,9 @@ while True:
 
 
 
-        K = 0.5*m*(ball.v.x**2 + ball.v.y**2) + 0.5*s0.value*A.v.x**2
+        K = 0.5*tmp_m*(ball.v.x**2 + ball.v.y**2) + 0.5*tmp_M*A.v.x**2
 
-        U = m*g*(ball.pos.y - (ball.radius+floor.size.y/2))
+        U = tmp_m*g*(ball.pos.y - (ball.radius+floor.size.y/2))
 
 
 

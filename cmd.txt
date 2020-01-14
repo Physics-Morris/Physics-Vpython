@@ -1,0 +1,18 @@
+bluetoothctl
+power on
+scan on
+pair xx:xx:
+trust xx:xx
+connect xx:xx
+sudo rfcomm connect hci0 xx:xx
+20:18:08:28:12:12
+
+imuctl make_group
+imuctl make_spp 1
+imuctl recording 1
+imuctl clear_tmp
+imuctl make_start
+imuctl make_stop
+imuctl save_data
+
+imuctl kill_recording
