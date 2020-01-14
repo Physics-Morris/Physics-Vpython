@@ -14,14 +14,14 @@ def main():
     # create scene and object
     scene = canvas(width=1000, height=600, align='left', range=3E-13)
 
-    Create_Charge(vec(0, 0, 0), 1)
+    Create_Charge(vec(10*radius, 0, 0), -1)
+    Create_Charge(vec(-10*radius, 0, 0), 1)
 
     # generate electric field
-    for r in range(1, 30, 5):
-        for theta in range(0, 6):
-            for phi in range(0, 6):
-                position = Transform_Coordinate(radius*r, theta*pi/3, phi*pi/3)
-                Create_Field(position)
+    for x in range(-22, 22, 5):
+        for y in range(-22, 22, 5):
+            for z in range(-12, 12, 5):
+                Create_Field(vec(x*radius, y*radius, z*radius))
 
 # create charge
 charges = []
@@ -37,7 +37,7 @@ def Create_Field(pos):
         E += k*charge.coulomb*(pos-charge.pos)/mag(pos-charge.pos)**3
     # create electric field using arrow
     color = Mapping(mag(E))
-    field.append(arrow(pos=pos, axis=hat(E)*arrow_length, color=vec(color, 0, 1)))
+    field.append(arrow(pos=pos, axis=hat(E)*arrow_length, color=vec(1, color, 0)))
 
 # coordinate transformation
 def Transform_Coordinate(r, theta, phi):
