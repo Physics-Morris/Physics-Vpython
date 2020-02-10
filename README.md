@@ -1,60 +1,43 @@
-# Project Title
+# Physics Simualtions
 
-One Paragraph of project description goes here
+Using python's visulize toolbox vpython to demostrate some problem in general physics textbook and other basic physics phenomenon.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+All you need to install python and vpython.
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+Install vpython for python 3.X
 
 ```
-Give the example
+pip3 install vpython
+```
+Or
+
+```
+pip install vpython
 ```
 
-And repeat
+Update in the future
 
 ```
-until finished
+pip3 install vpython --upgrade
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+You can execute the following code to see wether yout install vpython succesfully.
 
 ```
-Give an example
+from vpython import *
+sphere()
 ```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+And you should get a sphere in your web browser.
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+If you want to edit the code online, you can also use the alternative way. Go to the website https://www.glowscript.org/ and you can execute your code there.
 
 ## Built With
 
@@ -72,17 +55,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Morris Huang** (https://morrishuang-skipper.github.io/about)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
 
